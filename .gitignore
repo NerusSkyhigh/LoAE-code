@@ -6,6 +6,8 @@
 !**/*.pdf
 !**/*.v
 !**/*.bit
+!**/*.xise
+!**/*.ucf
 
 # ...even if they are in subdirectories
 !*/
