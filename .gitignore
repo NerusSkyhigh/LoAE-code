@@ -13,3 +13,4 @@
 # Keep these files safe!
 !libfreetype.so.6
 !libpng16.so.16
+!clean_project.sh
