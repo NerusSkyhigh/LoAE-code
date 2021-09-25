@@ -1,8 +1,4 @@
-module	Module_Counter_8_bit	(	clk_in,
-					limit,
-
-					out,
-					carry);
+module	Module_Counter_8_bit	(	clk_in, limit, out, carry);
 
 input		clk_in;
 input	[7:0]	limit;

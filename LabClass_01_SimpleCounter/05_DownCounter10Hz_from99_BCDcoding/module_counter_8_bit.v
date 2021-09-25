@@ -1,4 +1,4 @@
-module	Module_Counter_8_bit	(	clk_in,
+module	Module_DownCounter_8_bit	(	clk_in,
 					limit,
 
 					out,
