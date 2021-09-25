@@ -1,0 +1,15 @@
+# Ignore everything
+*
+
+# But not these files...
+!.gitignore
+!**/*.pdf
+!**/*.v
+!**/*.bit
+
+# ...even if they are in subdirectories
+!*/
+
+# Keep these files safe!
+!libfreetype.so.6
+!libpng16.so.16
