@@ -73,7 +73,7 @@ Module_Counter_8_bit		counter_decas		(	.clk_in(w_carry_u_t_d),
 // The multiplexing can be implemented in various ways.
 
 // METHOD 1: Bit shift to add numbers
-Module_Multiplexer_2_input_8_bit_comb	outputLED	 (	.address(SW),
+Module_Multiplexer_2_input_8_bit_sync	outputLED	 (	.address(SW),
 																										.input_0(w_deci<<4 | w_centi),
 																										.input_1(w_deca<<4 | w_unit),
 
