@@ -42,6 +42,8 @@ wire [7:0] outputSW;
 wire w_carry_c_t_d, w_carry_d_t_u, w_carry_u_t_d;
 wire [7:0] w_centi, w_deci, w_unit, w_deca;
 
+wire w_BTN_SOUTH;
+
 reg reset = 0;
 reg pause = 1;
 
@@ -54,15 +56,11 @@ Module_FrequencyDivider		clock_100_Hz_generator	(	.clk_in(CLK_50M),
 																										.clk_out(w_clock_100Hz));
 
 /*
-ASSIGNMENT 1:
-	Implementation of a synchronous module toggle flip-flop
-
-ASSIGNMENT 2:
-	Implementation (by means of a toggle flip-flop) of a toggle pushbutton
-	to switch on/off an LED.
-
-ASSIGNMENT 3:
-	Observation of the bouncing effect in a pushbutton
+ASSIGNMENTs:
+	1) Implementation of a synchronous module toggle flip-flop
+	2) Implementation (by means of a toggle flip-flop) of a toggle pushbutton
+			to switch on/off an LED.
+	3) Observation of the bouncing effect in a pushbutton
 */
 Module_Toggle_FlipFlop module_flip_flop		(	.clk_ms(CLK_50M), // master clock
 																						.clk_sl(BTN_WEST),
@@ -70,13 +68,11 @@ Module_Toggle_FlipFlop module_flip_flop		(	.clk_ms(CLK_50M), // master clock
 																						.state(outputTB[0]) );
 
 /*
-ASSIGNMENT 4:
-	Implementation of a synchronous module monostable multivibrator.
-
-ASSIGNMENT 5:
-	Implementation, by means of a monostable multivibrator and an improved
-	toggle pushbutton, of a timer to switch on an LED for a given time
-	(equal to 1 s, or programmable through the switches).
+ASSIGNMENTs:
+	4) Implementation of a synchronous module monostable multivibrator.
+	5) Implementation, by means of a monostable multivibrator and an improved
+			toggle pushbutton, of a timer to switch on an LED for a given time
+			(equal to 1 s, or programmable through the switches).
 */
 Monostable_Multivibrator module_Monostable_Multivibrator(	.clk_ms(CLK_50M),
 																													.clk_sl(w_clock_100Hz),
@@ -94,10 +90,11 @@ Improved_Toggle_Pushbutton debounced_toggle_pushbutton(	.clk_ms(CLK_50M),
 																												.pressed(BTN_WEST),
 																												.state(outputTB[2]));
 
+
+
 /****************************************/
 /***            STOPWATCH             ***/
 /****************************************/
-
 
 /* I exploit the fact that the counter is increated AFTER checking for the set
 	 flag. If that wasn't possible I'd have to link CLK_50 with counter_cs.qzt_clk
@@ -135,10 +132,13 @@ Module_Multiplexer_2_input_8_bit_sync	output_driver(	.clk_in(CLK_50M),
 
 																											.mux_output(LED[7:0]));
 
+Module_Toggle_FlipFlop	imrpoved_BTN_S(	.clk_ms(CLK_50M), .clk_sl(BTN_SOUTH),
+																				.state(w_BTN_SOUTH));
+
 // ADD DEBOUNCING!!!
 always @(posedge CLK_50M) begin
 
-	if (BTN_SOUTH) begin // Start / Stop
+	if (w_BTN_SOUTH) begin // Start / Stop
 		pause <= ~pause;
 
 	end else if (BTN_EAST) begin // Lap

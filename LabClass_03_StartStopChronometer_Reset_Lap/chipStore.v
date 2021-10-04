@@ -136,3 +136,94 @@ always @(posedge clk_in) begin
 end
 
 endmodule
+
+/*****************************/
+/*** Module_MonostableHold ***/
+/*****************************/
+
+`define		defaultN 	28'b0000000011110100001001000000	//	10^6 ===> 20 ms
+
+module Module_Monostable	(	clk_in,
+					monostable_input,
+					N,
+
+					monostable_output);
+
+input		clk_in;
+input		monostable_input;
+input	[27:0]	N;
+
+output		monostable_output;
+
+reg		monostable_output;
+
+reg		monostable_input_old;
+reg 	[27:0]	counter;
+
+always @(posedge clk_in) begin
+	if (counter == 0) begin
+		if (!monostable_input_old & monostable_input) begin
+			counter <= ((N)? N : `defaultN) - 1;
+			monostable_output <= 1;
+		end else
+			monostable_output <= 0;
+	end else
+		counter <= counter - 1;
+
+	monostable_input_old <= monostable_input;
+end
+
+endmodule
+
+/**********************************/
+/*** Module_ToggleFlipFlop_sync ***/
+/**********************************/
+
+module Module_ToggleFlipFlop	(	clk_in,
+					ff_input,
+
+					ff_output);
+
+input		clk_in;
+input		ff_input;
+
+output		ff_output;
+
+reg		ff_output;
+
+reg		ff_input_previous;
+
+always @(posedge clk_in) begin
+	if (!ff_input_previous & ff_input) begin
+		ff_output <= ~ff_output;
+	end
+
+	ff_input_previous <= ff_input;
+end
+
+endmodule
+
+/***************************/
+/*** Module_Latch_16_bit ***/
+/***************************/
+
+module	Module_Latch_16_bit	(	clk_in,
+					holdFlag,
+					twoByteInput,
+
+					twoByteOuput);
+
+input		clk_in;
+input		holdFlag;
+input	[15:0]	twoByteInput;
+
+output	[15:0]	twoByteOuput;
+
+reg	[15:0]	twoByteOuput;
+
+
+always @(posedge clk_in) begin
+	if (!holdFlag) twoByteOuput <= twoByteInput;
+end
+
+endmodule
