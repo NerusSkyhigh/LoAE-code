@@ -3,7 +3,6 @@
 /****************************************/
 /***            STOPWATCH             ***/
 /****************************************/
-
 module startStopChrono_reset_lap	(	CLK_50M,
 																		SW,
 																		BTN_SOUTH, BTN_EAST, BTN_NORTH,
@@ -70,14 +69,18 @@ module startStopChrono_reset_lap	(	CLK_50M,
 
 
 
-	//Improved_Toggle_Pushbutton	improved_BTN_S(	.clk_ms(CLK_50M), .pressed(BTN_SOUTH),
-	//																				.state(w_BTN_SOUTH));
+	Improved_Toggle_Pushbutton	improved_BTN_S(	.clk_ms(CLK_50M), .pressed(BTN_SOUTH),
+																					.state(w_BTN_SOUTH));
 
-	Module_Monostable	improved_BTN_S(	.clk_in(CLK_50M), .monostable_input(BTN_SOUTH), .N(25000000), //0.2 sec
-																		.monostable_output(w_BTN_SOUTH));
+	Improved_Toggle_Pushbutton	improved_BTN_E(	.clk_ms(CLK_50M), .pressed(BTN_EAST),
+																					.state(w_BTN_EAST));
 
-	Module_Monostable	improved_BTN_E(	.clk_in(CLK_50M), .monostable_input(BTN_EAST), .N(25000000), //0.2 sec
-																		.monostable_output(w_BTN_EAST));
+
+	//Module_Monostable	improved_BTN_S(	.clk_in(CLK_50M), .monostable_input(BTN_SOUTH), .N(25000000), //0.2 sec
+	//																	.monostable_output(w_BTN_SOUTH));
+
+	//Module_Monostable	improved_BTN_E(	.clk_in(CLK_50M), .monostable_input(BTN_EAST), .N(25000000), //0.2 sec
+	//																	.monostable_output(w_BTN_EAST));
 
 
 

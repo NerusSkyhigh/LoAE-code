@@ -16,7 +16,6 @@ module Improved_Toggle_Pushbutton(	clk_ms, pressed,
 
 
 	wire w_clock_50Hz;
-	wire w_toggle;
 
 	Module_FrequencyDivider		clock_50_Hz_generator(	.clk_in(clk_ms), .period(`50_Hz_Period),
 																										.clk_out(w_clock_50Hz));
@@ -25,12 +24,10 @@ module Improved_Toggle_Pushbutton(	clk_ms, pressed,
 	Monostable_Multivibrator module_MM(	.clk_ms(clk_ms), .clk_sl(w_clock_50Hz),
 																			.pressed(pressed), .ticks(8'b00001010), // 200 ms=0.2 s relaxation time
 																			.longpulse(0),
-																			.out(w_toggle));
-
-	Module_Toggle_FlipFlop	flip_flop_T(	.clk_ms(clk_ms), .input_tff(w_toggle),
-																				.state(state));
+																			.out(state));
 
 endmodule
+
 
 
 /****************************************/
@@ -56,17 +53,16 @@ module	Monostable_Multivibrator(	clk_ms, clk_sl,
 
 	output		out;
 
-	wire 	time_up; // Timer is over
+	wire 	w_time_up; // Timer is over
 
 	reg 	out = 0;
-	reg		state = 1; // Does the Monostable_Multivibrator accepts inputs?
+	reg		active = 1; // Does the Monostable_Multivibrator accepts inputs?
 	reg 	reset = 1; // Reset the timer
-
 
 	/*
 	NDR: The code could be optimized by exploiting the relations between the
 				various registers, e.g.:
-					- reset <--> ~state (Will keep resetting the counter when not active)
+					- reset <--> ~active (Will keep resetting the counter when not active)
 					- out <--> ~state (If the MM does not accepts inputs it is high)
 
 				These optimization will not be implemented for clarity.
@@ -75,27 +71,26 @@ module	Monostable_Multivibrator(	clk_ms, clk_sl,
 																											.reset(reset), .set(0), .presetValue(0),
 																											.limit(ticks),
 																											//.out(),
-																											.carry(time_up) );
+																											.carry(w_time_up) );
 
 	always @(posedge clk_ms) begin
-		if(pressed & state) begin
-			// If the button is pressed and the Monostable_Multivibrator
-			// is active (=accepts inputs):
-			out <= 1;		// set output to high
-			state <= 0;	// disable input
-			reset <= 1; // reset the counter
-		end else if(~state) begin
-			// If the MM is not active keep counting
+		if(active) begin
+			if(pressed) begin
+				// Start the count down from the next clk_ms tick
+				out <= 1;
+				active <= 0;
+				reset <= 0;
+			end
+		end else begin
 			reset <= 0;
 
-			// and if you don't want a long pulse disable the output
+			// and if the longpulse is not required disable the output
 			if(~longpulse) begin	out <= 0;	end
 
-			// when the time is over reset the state of the MM
-			if(time_up) begin
+			if(w_time_up) begin
+				out <= 0; //If time is over disable output anyway
+				active <= 1;
 				reset <= 1;
-				state <= 1;
-				out <= 0;
 			end
 		end
 
