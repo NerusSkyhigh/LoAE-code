@@ -14,6 +14,7 @@ find . -type f  ! -name '*.v' \
                 ! -name '*.pdf' \
                 ! -name '*.gitignore' \
                 ! -name 'clean_project.sh' \
+                ! -name '*.ngc' \
           -delete
 
 # Delete empty directories
