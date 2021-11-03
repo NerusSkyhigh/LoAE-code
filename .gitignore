@@ -8,6 +8,7 @@
 !**/*.bit
 !**/*.xise
 !**/*.ucf
+!**/*.ngc
 
 # ...even if they are in subdirectories
 !*/
