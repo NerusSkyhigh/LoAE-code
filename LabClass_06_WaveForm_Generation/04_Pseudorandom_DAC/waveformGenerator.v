@@ -1,21 +1,21 @@
-module waveformGenerator	(	CLK_50M,
-			SPI_SCK, SPI_MOSI, DAC_CS, DAC_CLR
-			);
-
-input		CLK_50M;
-input[3:0] SW;
-
-output		SPI_SCK;
-output		SPI_MOSI;
-output		DAC_CS;
-output		DAC_CLR;
+/*
+ * PROBLEM 04: PSEUDORANDOM NOISE GENERATOR
+ *	Implementation of a 31–bit pseudorandom noise generator
+ *	(oscilloscope required!) by:
+ *		– Implement a pseudorandom noise generator by clocking the previous
+ *			circuit at a frequency of ∼ 1 kHz or higher,
+ ∗ 		- Generating a 12–bit pseudorandom number by concatenating the outputs of
+ *			12 randomly chosen flip–flops,
+ ∗		- Feeding this number to a DAC (if an oscilloscope is available).
+ */
+module waveformGenerator(input CLK_50M,
+												 output SPI_SCK, output SPI_MOSI, output DAC_CS,
+												 output DAC_CLR);
 
 wire		w_clock;
 
 wire	[11:0]	wb_Va;
 wire	[11:0]	wb_Vb;
-
-
 
 
 Module_Counter_8_bit		SPI_SCK_generator	(	.clk_in(CLK_50M),
@@ -36,7 +36,6 @@ DAC_Driver			DAC_Driver		(	.CLK_50M(CLK_50M),
 
 // Slower clock
 `define		defaultPeriod	30'b000000000000000110000110101000 // 25 10^3
-
 wire w_clock_1_kHz;
 Module_FrequencyDivider	clock_1_kHz_generator(.clk_in(CLK_50M),
 																						  .period(`defaultPeriod),
@@ -57,6 +56,8 @@ always @(posedge CLK_50M) begin
 end
 
 assign wb_Va = wb_Vb;
+// Same here, the bits chosen are not actually random, but this allows me to
+// test the output knowing the initial seed.
 assign wb_Vb = register[11:0];
 
 

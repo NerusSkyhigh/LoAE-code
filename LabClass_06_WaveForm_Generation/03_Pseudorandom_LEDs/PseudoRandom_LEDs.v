@@ -1,3 +1,12 @@
+/*
+ * PROBLEM 04: PSEUDORANDOM GENERATOR ON LEDs
+ *	Implement a 31-bit pseudorandom number generator and display its function by
+ ∗  	- Implementing a 31–bit shift register (SR),
+ ∗ 		- Feeding–back the serial input (i.e. the 0th bit) with the XOR of the
+ *			30th and the 27th bit,
+ ∗ 		- Clocking the SR with a 1 or 2 Hz source and connecting eight randomly
+ *			selected flip–flop outputs to the eight LEDs;
+ */
 module ShiftRegister	(input CLK_50M,
 											 output reg[7:0] LED);
 
@@ -21,6 +30,8 @@ always @(posedge CLK_50M) begin
 	end
 
 	old_clock_1_Hz <= w_clock_1_Hz;
+	// The leds chosen are not actually random, but this allows me to
+	// test the output knowing the initial seed.
 	LED <= register[7:0];
 end
 
