@@ -9,6 +9,7 @@
 !**/*.xise
 !**/*.ucf
 !**/*.ngc
+!**/measurement.txt
 
 # ...even if they are in subdirectories
 !*/

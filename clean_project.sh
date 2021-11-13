@@ -17,6 +17,7 @@ find . -type f  ! -path './.git/*' \
                 ! -name '*.xise' \
                 ! -name '*.ucf' \
                 ! -name '*.ngc' \
+                ! -name 'measurement.txt' \
           -delete
 
 # Delete empty directories
