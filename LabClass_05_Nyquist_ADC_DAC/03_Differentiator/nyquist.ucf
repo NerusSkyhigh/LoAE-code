@@ -13,4 +13,5 @@ OFFSET = OUT 20.000 AFTER "CLK_50M" ;
 	############################################
 	############################################
 
-NET "SW"	LOC = "T9"   | IOSTANDARD = LVCMOS33 ;
+NET "SW<0>"	LOC = "T9"   | IOSTANDARD = LVCMOS33 ;
+NET "SW<1>"	LOC = "U8"  | IOSTANDARD = LVCMOS33 ;

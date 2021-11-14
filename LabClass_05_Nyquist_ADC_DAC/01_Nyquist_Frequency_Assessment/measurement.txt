@@ -1,0 +1,59 @@
+PROBLEM 01: Nyquist frequency assessment.
+
+For each of the two positions of the leftmost switch (board pin “T9”), by suitably using the oscilloscope, determine:
+  - The system’s Nyquist frequency with a precision of at least 1 Hz;
+  - The delay of both channels, A (ADC A → DAC A) and B (ADC B → DAC B);
+  - The amplification of each channel.
+
+
+SOLUTION:
+
+Case T9 "UP":
+  - Nyquist frequency: 50.000 kHz
+  - Delay (3 kHz square wave):
+      A-->A: 27 us
+      B-->B: 33 us
+  - Amplification (3 kHz square wave)
+      A-->A:
+        GENERATOR:  Vmin=1.20V;
+                    Vmax=2.20V;
+                    deltaV=1.00V
+        DAC OUTPUT: Vmin=980.0 mV
+                    Vmax=2.400 V
+                    deltaV=1.340 V
+        Amplification: 1.34
+
+      B-->B:
+        GENERATOR:  Vmin=1.20V;
+                    Vmax=2.20V;
+                    deltaV=1.00V
+        DAC OUTPUT: Vmin=980.0 mV
+                    Vmax=2.400 V
+                    deltaV=1.340 V
+        Amplification: 1.34 again
+
+----------------------------------------------------
+
+Case T9 "DOWN":
+  - Nyquist frequency: 183.8225 kHz
+  - Delay (3 kHz square wave):
+      A-->A: 9 us
+      B-->B: 9 us again
+  - Amplification (3 kHz square wave)
+      A-->A:
+        GENERATOR:  Vmin=1.180V
+                    Vmax=2.220V
+                    deltaV=1.040V
+        DAC OUTPUT: Vmin=  980mV
+                    Vmax=2.380V
+                    deltaV=1.320V
+        Amplification: 1.27
+
+      B-->B:
+        GENERATOR:  Vmin=2.220V
+                    Vmax=1.220V
+                    deltaV=1.000V
+        DAC OUTPUT: Vmin=1.000V
+                    Vmax=2.380V
+                    deltaV=1.380V
+        Amplification: 1.38
