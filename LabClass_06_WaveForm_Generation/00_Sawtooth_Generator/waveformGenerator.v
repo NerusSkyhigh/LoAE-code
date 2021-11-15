@@ -7,7 +7,6 @@
  *	by using the other switches, implement an option that allows to change the
  *	absolute value of the waveform slope, and thus of the frequency.
  */
-
 module waveformGenerator(input CLK_50M, input[3:0] SW,
 												 output SPI_SCK, output SPI_MOSI, output DAC_CS, output DAC_CLR);
 
@@ -15,6 +14,9 @@ wire		w_clock;
 
 wire	[11:0]	wb_Va;
 wire	[11:0]	wb_Vb;
+
+// I want the same output on both DACs
+assign wb_Va = wb_Vb;
 
 Module_Counter_8_bit		SPI_SCK_generator	(	.clk_in(CLK_50M),
 								.limit(30'd4),		// 4x20 ns = 80 ns <===> 50/4 MHz = 12.5 MHz
@@ -33,19 +35,21 @@ DAC_Driver			DAC_Driver		(	.CLK_50M(CLK_50M),
 
 
 // Slower clock
-wire w_clock_10_Hz;
+wire w_SW_clock;
 wire [11:0] w_DAC;
-wire [2:0] defaultPeriod;
-assign defaultPeriod = {SW[3], SW[2], SW[1]};
+wire [2:0] variablePeriod;
 
-Module_FrequencyDivider	clock_10_Hz_generator(.clk_in(CLK_50M),
-																							.period(defaultPeriod),
+assign variablePeriod = {SW[3], SW[2], SW[1]};
 
-																							.clk_out(w_clock_10_Hz));
+Module_FrequencyDivider	clock_generator(.clk_in(CLK_50M),
+																				.period(variablePeriod),
+
+																				.clk_out(w_SW_clock));
+
 
 `define maximumDAC {12{1'b1}}
 // The DAC is a 12 bits; the maximum is 12'b111111111111
-Module_SynchroCounter_12_bit_SR	counter ( .qzt_clk(CLK_50M), .clk_in(w_clock_10_Hz),
+Module_SynchroCounter_12_bit_SR	counter ( .qzt_clk(CLK_50M), .clk_in(w_SW_clock),
 																					.reset(0), .set(0),
 																					.presetValue(11'd0), .limit(`maximumDAC),
 
@@ -53,7 +57,6 @@ Module_SynchroCounter_12_bit_SR	counter ( .qzt_clk(CLK_50M), .clk_in(w_clock_10_
 
 // The first bit drives the sign of the slope
 assign wb_Vb = SW[0] ? w_DAC : ~w_DAC;
-
 
 endmodule
 
@@ -98,10 +101,10 @@ endmodule
 /*************************************************/
 /*** Module_FrequencyDivider from chipstore.v ***/
 /************************************************/
-module	Module_FrequencyDivider	(input clk_in, input[29:0] period,
+module	Module_FrequencyDivider	(input clk_in, input[3:0] period,
 																 output reg clk_out);
 
-	reg	[29:0]	counter;
+	reg	[3:0]	counter;
 
 	always @(posedge clk_in) begin
 		if (counter >= (period - 1)) begin

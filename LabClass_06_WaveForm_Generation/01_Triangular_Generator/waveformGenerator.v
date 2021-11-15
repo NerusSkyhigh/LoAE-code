@@ -20,7 +20,6 @@ wire	[11:0]	wb_Vb;
 // I want the same output on both DACs
 assign wb_Va = wb_Vb;
 
-
 Module_Counter_8_bit		SPI_SCK_generator	(	.clk_in(CLK_50M),
 								.limit(30'd4),		// 4x20 ns = 80 ns <===> 50/4 MHz = 12.5 MHz
 
@@ -38,19 +37,21 @@ DAC_Driver			DAC_Driver		(	.CLK_50M(CLK_50M),
 
 
 // Slower clock
-wire w_clock_10_Hz;
+wire w_SW_clock;
 wire [11:0] w_DAC;
 wire [3:0] defaultPeriod;
+
 assign defaultPeriod = {SW[3], SW[2], SW[1], SW[0]};
+
 Module_FrequencyDivider	clock_10_Hz_generator(.clk_in(CLK_50M),
 																							.period(defaultPeriod),
 
-																							.clk_out(w_clock_10_Hz));
+																							.clk_out(w_SW_clock));
 
 // The carry is used as a way to detect wheter an extreme is reached
 wire carry;
 `define maximumDAC {12{1'b1}}
-Module_SynchroCounter_12_bit_SR	counter ( .qzt_clk(CLK_50M), .clk_in(w_clock_10_Hz),
+Module_SynchroCounter_12_bit_SR	counter ( .qzt_clk(CLK_50M), .clk_in(w_SW_clock),
 																					.reset(0), .set(0),
 																					.presetValue(11'd0), .limit(`maximumDAC),
 
