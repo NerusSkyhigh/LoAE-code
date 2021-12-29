@@ -6,11 +6,9 @@ ASSIGNMENT:
 `define		defaultPeriod4	30'b000000000000111101000010010000	//	25 10^4
 `define		defaultPeriod5	30'b000000000000111101000010010000  //  25 10^5
 
-module simpleCounter	(	CLK_50M, LED);
+module simpleCounter_10Hz_upto99_BCDcoding(input	CLK_50M,
 
-input		CLK_50M;
-
-output	[7:0]	LED;
+																					output [7:0] LED);
 
 
 wire		w_clock_10_Hz;

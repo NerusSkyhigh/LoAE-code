@@ -10,11 +10,9 @@ NOTE:
 `define		defaultPeriod	30'b000001011111010111100001000000	//	25 10^6
 
 
-module simpleCounter	(	CLK_50M, LED);
+module simpleCounter_1Hz_upto9(input	CLK_50M,
 
-input		CLK_50M;
-
-output	[7:0]	LED;
+															output [7:0] LED);
 
 wire		w_clock_10_Hz;
 
