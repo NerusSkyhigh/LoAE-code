@@ -17,3 +17,20 @@ always @(posedge clk_in) begin
 end
 
 endmodule
+
+module Module_DownCounter_8_bit(input clk_in, input [7:0] limit,
+
+															  output reg [7:0] out, output reg carry);
+
+always @(posedge clk_in) begin
+	if (out <= 0) begin
+		out = limit-1;
+		carry = 1;
+	end else if (out == limit-1) begin
+		out = limit - 2;
+		carry = 0;
+	end else
+		out = out - 1;
+end
+
+endmodule

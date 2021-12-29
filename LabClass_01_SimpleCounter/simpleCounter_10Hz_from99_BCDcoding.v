@@ -2,7 +2,7 @@
 ASSIGNMENT:
 	Development of a 10 Hz down counter
 */
-`define		defaultPeriod5	30'b0000000001001100010010110100000	//	25 10^5
+`define		defaultPeriod5	30'b000000001001100010010110100000	//	25 10^5
 
 module simpleCounter_10Hz_from99_BCDcoding(input	CLK_50M,
 

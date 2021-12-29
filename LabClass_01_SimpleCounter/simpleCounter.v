@@ -17,6 +17,7 @@ wire		w_clock_1_Hz;
 
 // 50 MHz base clock frequency is divided by 25M.
 // Where does the factor 2 end? --> maybe it's the FF delay?
+// 															the manual doesn't say anything about it...
 Module_FrequencyDivider		clock_1_Hz_generator	(	.clk_in(CLK_50M),
 																									.period(`defaultPeriod),
 
