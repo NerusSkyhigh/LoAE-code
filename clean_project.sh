@@ -18,6 +18,7 @@ find . -type f  ! -path './.git/*' \
                 ! -name '*.ucf' \
                 ! -name '*.ngc' \
                 ! -name 'measurement.txt' \
+                ! -name '*.eps' \
           -delete
 
 # Delete empty directories
