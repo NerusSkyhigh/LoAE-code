@@ -1,14 +1,5 @@
-module	Module_FrequencyDivider	(	clk_in,
-					period,
-
-					clk_out);
-
-input		clk_in;
-input	[29:0]	period;
-
-output		clk_out;
-
-reg		clk_out;
+module	Module_FrequencyDivider(input clk_in, input	[29:0]	period,
+																output reg clk_out);
 
 reg	[29:0]	counter;
 
