@@ -9,12 +9,9 @@ ASSIGNMENT:
 `define		100_Hz_Period	30'd250000 // 25 10^4
 
 
-module simpleChronometer	(	CLK_50M, SW, LED);
+module simpleChronometer(input CLK_50M, input SW, // Switch on the right, SW0
 
-input		CLK_50M;
-input		SW; // SWitch (the one on the right, SW0)
-
-output	[7:0]	LED;
+												 output [7:0] LED);
 
 /****************************************/
 /*** ... and hereafter what's left... ***/
@@ -70,17 +67,20 @@ Module_Counter_8_bit		counter_decas		(	.clk_in(w_carry_u_t_d),
 																					.out(w_deca));
 
 
-// The multiplexing can be implemented in various ways.
+// The multiplexing can be implemented in various ways:
+// METHOD 1: Combine the outputs via bit shift.
+Module_Multiplexer_2_input_8_bit_sync	outputLED	(.clk_in(CLK_50M),
+																								 .address(SW),
+																								 .input_0(w_deci<<4 | w_centi),
+																								 .input_1(w_deca<<4 | w_unit),
 
-// METHOD 1: Bit shift to add numbers
-Module_Multiplexer_2_input_8_bit_sync	outputLED	 (	.address(SW),
-																										.input_0(w_deci<<4 | w_centi),
-																										.input_1(w_deca<<4 | w_unit),
+																								 .mux_output(LED));
 
-																										.mux_output(LED));
 
+/****************************************/
+/***     Synchronous Multiplexer      ***/
+/****************************************/
 /*
-// Sync version
 Module_Multiplexer_2_input_8_bit_sync	outputLED	(	.clk_in(w_clock_100_Hz),
 																									.address(SW),
 																									.input_0(w_deci<<4 | w_centi),
