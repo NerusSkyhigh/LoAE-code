@@ -123,6 +123,7 @@ reg		state;
 reg		input_tff_old; // Check if the slower clock has changed state
 
 always @(posedge clk_ms) begin
+	// Works only on positive edges
 	if( !input_tff_old & input_tff ) begin
 		state <= ~state;
 	end

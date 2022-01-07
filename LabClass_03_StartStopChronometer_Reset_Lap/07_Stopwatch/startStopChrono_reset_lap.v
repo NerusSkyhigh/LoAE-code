@@ -3,20 +3,12 @@
 /****************************************/
 /***            STOPWATCH             ***/
 /****************************************/
-module startStopChrono_reset_lap	(	CLK_50M,
-																		SW,
-																		BTN_SOUTH, BTN_EAST, BTN_NORTH,
+module startStopChrono_reset_lap(input CLK_50M. input SW,
+																 input BTN_SOUTH, // Start-stop
+																 input BTN_EAST,	// lap
+																 input BTN_NORTH, // reset
 
-																		LED);
-
-	input		CLK_50M;
-	input 	SW;
-	input		BTN_SOUTH;	// Start-stop
-	input		BTN_EAST;	// lap
-	input		BTN_NORTH;	// reset
-
-	output	[7:0]	LED;
-
+																 output [7:0] LED);
 
 	wire [7:0] outputSW_RT, outputSW_LAP;
 	wire [7:0] w_centi, w_deci, w_unit, w_deca;
