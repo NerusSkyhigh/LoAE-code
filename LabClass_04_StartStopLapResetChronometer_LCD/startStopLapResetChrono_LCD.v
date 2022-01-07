@@ -1,22 +1,10 @@
-module startStopLapReset_LCD	(	CLK_50M,
-					//SW,
-					PUSH_BTN_SS, PUSH_BTN_LR,
+module startStopLapReset_LCD(input CLK_50M,
+					//input SW,
+					input PUSH_BTN_SS, input PUSH_BTN_LR,
 
-					LED,
-					LCD_DB,
-					LCD_E, LCD_RS, LCD_RW);
-
-input		CLK_50M;
-//input		SW;
-input		PUSH_BTN_SS;
-input		PUSH_BTN_LR;
-
-output	[7:0]	LED;
-output	[7:0]	LCD_DB;
-output		LCD_E;
-output		LCD_RS;
-output		LCD_RW;
-
+					output [7:0] LED,
+					output [7:0] LCD_DB,
+					output LCD_E, output LCD_RS, output LCD_RW);
 
 //wire	[15:0]	wb_counter;
 wire	[15:0]	wb_counter_toShow;
@@ -41,7 +29,7 @@ LCD_Driver_forChrono	lcd_driver	(	.qzt_clk(CLK_50M),
 buf(LED[6], 0);
 buf(LED[3], 0);
 
-// Wirest to connect monostable output
+// Wires to connect monostable output
 wire w_SS, w_LR;
 
 
@@ -129,24 +117,13 @@ endmodule
 /****************************************/
 /***  COPY AND ADAPT FROM CHIPSTORE   ***/
 /****************************************/
-module	Module_Multiplexer_2_input_16_bit_sync	(	clk_in,
-							address,
-							input_0,
-							input_1,
+module	Module_Multiplexer_2_input_16_bit_sync(	input clk_in, input address,
+																								input	[15:0] input_0, input	[15:0] input_1,
 
-							mux_output);
+																								output reg[15:0] mux_output);
 
-input		clk_in;
-input		address;
-input	[15:0]	input_0;
-input	[15:0]	input_1;
-
-output	[15:0]	mux_output;
-
-reg	[15:0]	mux_output;
-
-always @(posedge clk_in) begin
-	mux_output <= (address)? input_1 : input_0;
-end
+	always @(posedge clk_in) begin
+		mux_output <= (address)? input_1 : input_0;
+	end
 
 endmodule

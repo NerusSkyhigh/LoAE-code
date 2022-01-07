@@ -1,15 +1,9 @@
-module StateMachine(clk_in, PULSE_A, PULSE_B,
-                    state, reset_pulse);
+module StateMachine(input clk_in,
+                    input PULSE_A, input PULSE_B,
 
-  input clk_in;
-  input PULSE_A;
-  input PULSE_B;
+                    output reg [2:0] state, // Current state. The nomenclature is the same as in the assignment
+                    output reg reset_pulse);
 
-  output state;
-  output reset_pulse;
-
-  reg[2:0] state; // Current state. The nomenclature is the same as in the assignment
-  reg reset_pulse = 1;
 
   reg OLD_PULSE_A, OLD_PULSE_B;
 
