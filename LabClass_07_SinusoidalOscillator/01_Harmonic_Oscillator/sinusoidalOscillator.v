@@ -114,6 +114,12 @@ Module_Oscillator		pendulumInPhase		(	.clk_in(w_clock),
 
 								.wave(wb_Va));
 
-assign wb_Vb = ~wb_Va;
+Module_Quadrature_Oscillator		pendulumInQuadrature	(	.clk_in(w_clock),
+								.sin(wb_Va),
+								.k(SW),
+								.loadBoundaryCondition(pushButton),
+								.boundaryCondition(`boundaryCondition),
+
+								.wave(wb_Vb));
 
 endmodule
