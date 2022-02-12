@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ "$PWD" != "/home/guglielmo/GithubRepositories/labIV" ]; then
+if [ "$PWD" != "/home/guglielmo/GithubPersonal/labIV" ]; then
   echo "I think I'm in the wrong directory."
   echo "I'll stop in ordert to not delete important files"
   exit;
