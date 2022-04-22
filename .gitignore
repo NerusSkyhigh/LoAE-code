@@ -11,6 +11,9 @@
 !**/*.ngc
 !**/measurement.txt
 !**/*.eps
+!**/*.png
+!**/*.p
+!**/*.csv
 
 # ...even if they are in subdirectories
 !*/
