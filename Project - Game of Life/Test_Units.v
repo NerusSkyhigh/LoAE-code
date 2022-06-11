@@ -1,4 +1,37 @@
 /********************
+ *	Dead_or_Alive 	*
+ ********************
+ * This module checks wheter the module
+ * CELLULAR_AUTOMATA works fine by providin
+ * a controlled input and displaying the state
+ */
+module Dead_or_Alive(input CLK_50M,
+									 	 input [3:0] SW,
+
+									 	 output reg LED
+									   );
+
+wire status_cell, set_state;
+assign set_state = SW[3];
+
+CELLULAR_AUTOMATA my_cell(.qzt_clk(CLK_50M), .clk_in(CLK_CA),
+	 					.NW(0), .N(SW[0]), .NE(SW[1]),
+						.W(0),		  			 .E(0),
+						.SW(0), .S(1), .SE(SW[2]),
+
+						.set_state(set_state),
+						.initial_state(1),
+
+						.state(status_cell)
+						);
+
+always @ (posedge CLK_50M) begin
+	LED <= status_cell;
+end
+
+endmodule
+
+/********************
  *	Reference_Lines	*
  ********************
  * This test will print the diagonal of the square 480x480,
