@@ -124,19 +124,12 @@ endmodule
 
 `define		defaultN 	28'b0000000011110100001001000000	//	10^6 ===> 20 ms
 
-module Module_Monostable	(	clk_in,
-					monostable_input,
-					N,
+module Module_Monostable(input clk_in,
+												 input monostable_input,
+												 input [27:0] N,
 
-					monostable_output);
+												 output reg monostable_output);
 
-input		clk_in;
-input		monostable_input;
-input	[27:0]	N;
-
-output		monostable_output;
-
-reg		monostable_output;
 
 reg		monostable_input_old;
 reg 	[27:0]	counter;

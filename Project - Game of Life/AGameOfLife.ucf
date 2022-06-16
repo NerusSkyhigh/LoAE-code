@@ -17,6 +17,11 @@ NET "SW<1>"         LOC = "U10"  | IOSTANDARD = LVCMOS33 ;
 NET "SW<2>"         LOC = "U8"   | IOSTANDARD = LVCMOS33 ;
 NET "SW<3>"         LOC = "T9"  | IOSTANDARD = LVCMOS33 ;
 
+####################################################
+#  Knob pins - Copied and pasted from the manual   #
+####################################################
+NET "ROT_A" LOC = "T13" | IOSTANDARD = LVCMOS33 | PULLUP ;
+NET "ROT_B" LOC = "R14" | IOSTANDARD = LVCMOS33 | PULLUP ;
 
 ####################################################
 #   VGA Pins - Copied and pasted from the manual   #
