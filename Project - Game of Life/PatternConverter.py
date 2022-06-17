@@ -37,8 +37,8 @@ print("`define L2 "+str(L*L))
 print("PATTERN:")
 for idx in range(L):
     if(idx < len(lines)):
-        print( lines[idx].rjust(L, "0"), end="" )
+        print( lines[idx].ljust(L, "0"), end="" )
     else:
-        print( "".rjust(L, "0"), end="")
+        print( "".ljust(L, "0"), end="")
 
 print("")

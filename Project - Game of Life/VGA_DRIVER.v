@@ -61,6 +61,9 @@ module VGA_DRIVER_480p(input  wire clk_vga,   // pixel clock
 endmodule
 
 
+/*
+ *
+ */
 `define	decay 	28'b0011110100001001000000000000	//	1280 ms
 module VGA_ZOOM_KNOB(input clk_in,
 										 input ROT_A,
@@ -82,12 +85,20 @@ Module_Monostable	ms_timer( .clk_in(clk_in),
 
 always @ (posedge clk_in) begin
 
-	if(active & ROT_A & ~ROT_B & (zoom < 3'b111) ) begin // Clockwise
-		zoom <= zoom + 1;
+	if(active & ROT_A & ~ROT_B ) begin // Clockwise
+		if(zoom < 3'b111) begin
+			// This is a nested if to avoid bounces at maximum
+			// and minimum zoom.
+			zoom <= zoom + 1;
+		end
 		active <= 0;
-	end else if(active & ~ROT_A & ROT_B & (zoom > 3'b000) ) begin
-		zoom <= zoom - 1;
+
+	end else if(active & ~ROT_A & ROT_B ) begin
+		if( zoom > 3'b000) begin
+			zoom <= zoom - 1;
+		end
 		active <= 0;
+		
 	end else if(w_wait == 0) begin
 		active <= 1;
 	end

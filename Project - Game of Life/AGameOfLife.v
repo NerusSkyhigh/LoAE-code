@@ -1,15 +1,16 @@
-`define L 16 // Size of the grid
-`define L2 256 // L*L
+`define L 16 // Size of the grid, has to be a power of 2.
+						 // Due to FPGA limitations only L = 2, 4, 8, 16 is supported
+`define L2 256 // L2 has to be = L*L
 
 // This defines the default time between generations
 //`define		defaultPeriod	30'b000001011111010111100001000000	//	25 10^6 ~ 1s
-`define		defaultPeriod	30'b000000000001011111010111100001
+`define		defaultPeriod	30'b000000000000010111110101111000
 
 
 module AGameOfLife(input CLK_50M,
 									 input [3:0] SW,
 
-									 input ROT_A,
+									 input ROT_A, // Knob
 									 input ROT_B,
 
 									 output reg [3:0] VGA_R,
@@ -17,6 +18,7 @@ module AGameOfLife(input CLK_50M,
 									 output reg [3:0] VGA_B,
 									 output VGA_HSYNC, // When to begin a new line
 									 output VGA_VSYNC, // When to move on the right
+
 									 output reg [7:0] LED
 									 );
 
@@ -29,59 +31,59 @@ VGA_ZOOM_KNOB zoomer(.clk_in(CLK_50M),
 										 .zoom(wb_zoom));
 
 
-
-
-// Wires going out of each cell.
-// It represents the STATUS of the other cells
-// There are L*L cells.
-
+// Initial condition encoded as a bit string. 1 = alive, 0 = dead
 // `L2'b01000000_01000000_01000000_00000000_00000000_00000000_00000000_00000000
-wire [`L2-1:0] w_initial_status = `L2'b0000000011001011000000010010011000000000101000000000000001000000000000000000000100000000000001110000000000001000000000000000010000000000000000110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
-wire [`L2-1:0] w_status;
+
+// Scorpions
+//`L2'b0000000011001011000000010010011000000000101000000000000001000000000000000000000100000000000001110000000000001000000000000000010000000000000000110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+wire [`L2-1:0] wb_initial_status = `L2'b0011100011100000000000000000000010000101000010001000010100001000100001010000100000111000111000000000000000000000001110001110000010000101000010001000010100001000100001010000100000000000000000000011100011100000000000000000000000000000000000000000000000000000;
+wire [`L2-1:0] wb_status; // Current status
 
 
-
-wire CLK_CA; // Evolution clock of the simulation
-
+// Evolution clock of the simulation. It can be set with the switches
+wire CLK_CA;
 Module_FrequencyDivider	mod_fd(.clk_in(CLK_50M), .period(`defaultPeriod << SW),
 															 .clk_out(CLK_CA));
 
 
-
-wire set_state;
-assign set_state = SW[3];
 always @ (posedge CLK_50M) begin
+	// Useful syntax found, it is not essential at this stage of the projectf
+	// but i wanted to keep it nevertheless
 	// https://stackoverflow.com/questions/53457788/most-significant-bit-operand-in-part-select-of-vector-wire-is-illegal
-	//LED <= w_status[ `L*SW[2:0]+:5];
-	LED[7:3] <= w_status[ `L*SW[2:0]+:8];
-	LED[2:0] <= wb_zoom;
+	LED <= wb_status[ `L*SW[2:0]+:8];
 end
 
-/*
- * Generate block to create the
- */
+
+wire w_set_state;
+assign w_set_state = SW[3];
+
+// Generate block:
+//	It allows to parametrize the instatiation of module
 genvar row;
 generate
 	for(row=0; row<`L; row=row+1) begin: gen_rows
 		genvar col;
+		// In future runs I may use non squared grids but then I would need to
+		// implement a different way to compute division and modulus later.
 		for(col=0; col<`L; col=col+1) begin: gen_col
 			// Periodic boundary conditions
 			CELLULAR_AUTOMATA ca(.qzt_clk(CLK_50M), .clk_in(CLK_CA),
-													 .NW( w_status[`L*( (row == `L-1) ? 0		 : row+1) + ( (col == `L-1) ?    0 : col+1)]),
-										 		 	 	.N( w_status[`L*( (row == `L-1) ? 0 	 : row+1) +    col]),
-													 .NE( w_status[`L*( (row == `L-1) ? 0 	 : row+1) + ( (col ==    0) ? `L-1 : col-1)]),
+													 .NW( wb_status[`L*( (row == `L-1) ? 0	 : row+1) + ( (col == `L-1) ?    0 : col+1)]),
+										 		 	 	.N( wb_status[`L*( (row == `L-1) ? 0 	 : row+1) +    col]),
+													 .NE( wb_status[`L*( (row == `L-1) ? 0 	 : row+1) + ( (col ==    0) ? `L-1 : col-1)]),
 
-										 		 	  .W( w_status[`L*row 												 		+ ( (col == `L-1) ?    0 : col+1)]),
-										 		 	  .E( w_status[`L*row 														+ ( (col ==    0) ? `L-1 : col-1)]),
+										 		 	  .W( wb_status[`L*row 												 		+ ( (col == `L-1) ?    0 : col+1)]),
+										 		 	  .E( wb_status[`L*row 														+ ( (col ==    0) ? `L-1 : col-1)]),
 
-												 	 .SW( w_status[`L*( (row == 0) 		? `L-1 : row-1) + ( (col == `L-1) ?    0 : col+1)]),
-										 		 		.S( w_status[`L*( (row == 0)		? `L-1 : row-1) +  col]),
-													 .SE( w_status[`L*( (row == 0) 		? `L-1 : row-1) + ( (col ==    0) ? `L-1 : col-1)]),
+												 	 .SW( wb_status[`L*( (row == 0) 		? `L-1 : row-1) + ( (col == `L-1) ?    0 : col+1)]),
+										 		 		.S( wb_status[`L*( (row == 0)		? `L-1 : row-1) +  col]),
+													 .SE( wb_status[`L*( (row == 0) 		? `L-1 : row-1) + ( (col ==    0) ? `L-1 : col-1)]),
 
-													 .set_state(set_state),
- 							 						 .initial_state(w_initial_status[`L*row + col]),
+													 .set_state(w_set_state),
+ 							 						 .initial_state(wb_initial_status[`L*row + col]),
 
-													 .state( w_status[`L*row + col] ));
+													 .state(wb_status[`L*row + col] ));
 		end
 	end
 endgenerate
@@ -91,16 +93,17 @@ endgenerate
 
 wire w_clock_25MHz,
 		 data_enabled;
-wire [9:0] w_vga_x, w_vga_y;
+
+wire [9:0] wb_vga_x, wb_vga_y;
 
 VGA_CLOCK_480p VGA_clock(.clk_in(CLK_50M),
 												 .clk_out(w_clock_25MHz));
 
 VGA_DRIVER_480p vga_driver(.clk_vga(w_clock_25MHz),// pixel clock
-		    									 .rst(0),       		 // reset
+		    									 .rst(0),       		 		 // reset
 
-													 .sx(w_vga_x),  			   // horizontal screen position
-													 .sy(w_vga_y),  				 // vertical screen position
+													 .sx(wb_vga_x),  			   // horizontal screen position
+													 .sy(wb_vga_y),  				 // vertical screen position
 													 .hsync(VGA_HSYNC),      // horizontal sync
 													 .vsync(VGA_VSYNC),      // vertical sync
 													 .de(data_enabled) );    // data enable (low in blanking interval)
@@ -108,23 +111,27 @@ VGA_DRIVER_480p vga_driver(.clk_vga(w_clock_25MHz),// pixel clock
 
 
 always @(posedge w_clock_25MHz) begin
-	// w_status[`L*row + col]
-	if( (w_status[`L2 - (`L*( (w_vga_y >> wb_zoom ) % `L) + ( (w_vga_x >> wb_zoom) % `L))] == 1'b1) & (w_vga_x<479) ) begin
+	// wb_status[`L*row + col]
+
+	if( (wb_status[ `L*( (wb_vga_y >> wb_zoom ) % `L) + ( (wb_vga_x >> wb_zoom) % `L) ] == 1'b1) & (wb_vga_x<479) ) begin
 		VGA_B[3:0] <= (data_enabled) ?  4'b0001 : 4'b0000;
 		VGA_R[3:0] <= (data_enabled) ?  4'b0001 : 4'b0000;
 		VGA_G[3:0] <= (data_enabled) ?  4'b0001 : 4'b0000;
 
-	end else begin if( (w_vga_x[wb_zoom] ^ w_vga_y[wb_zoom]) & (w_vga_x<479)) begin
+	end else begin if( (wb_vga_x[wb_zoom] ^ wb_vga_y[wb_zoom]) & (wb_vga_x<479)) begin
+			// Background squares gray
 			VGA_B[3:0] <= (data_enabled) ?  4'b1100 : 4'b0000;
 			VGA_R[3:0] <= (data_enabled) ?  4'b1100 : 4'b0000;
 			VGA_G[3:0] <= (data_enabled) ?  4'b1100 : 4'b0000;
 
-		end else if( ~(w_vga_x[wb_zoom] ^ w_vga_y[wb_zoom]) & (w_vga_x<479)) begin
+		end else if( ~(wb_vga_x[wb_zoom] ^ wb_vga_y[wb_zoom]) & (wb_vga_x<479)) begin
+			// Background squares white
 			VGA_B[3:0] <= (data_enabled) ?  4'b1111 : 4'b0000;
 			VGA_R[3:0] <= (data_enabled) ?  4'b1111 : 4'b0000;
 			VGA_G[3:0] <= (data_enabled) ?  4'b1111 : 4'b0000;
 
 		end else begin
+			// The rest should be black
 			VGA_B[3:0] <= 4'b0000;
 			VGA_R[3:0] <= 4'b0000;
 			VGA_G[3:0] <= 4'b0000;

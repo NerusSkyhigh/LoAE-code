@@ -1,20 +1,3 @@
-/*******************************/
-/*** Module_FrequencyDivider ***/
-/*******************************/
-/* module	Conway(input clk_in,
-							 29:0] period,
-
-							 reg clk_out);
-	reg	[29:0]	counter;
-
-	always @(posedge clk_in) begin
-		if (counter >= (period - 1)) begin
-			counter <= 0;
-			clk_out <= ~clk_out;
-		end else
-			counter <= counter + 1;
-	end
-endmodule */
 
 module CELLULAR_AUTOMATA(input qzt_clk, input clk_in,
 						// Nearest neighbours
@@ -29,16 +12,16 @@ module CELLULAR_AUTOMATA(input qzt_clk, input clk_in,
 						output reg state
 						);
 
+// Useful syntax found, it is not used in the project
+// but i wanted to keep it nevertheless
 /*initial begin
 	state <= initial_state;
 end */
 
-reg [3:0] nn_alive;
-
+reg [3:0] nn_alive; // Number of neighbours alive
 always @(posedge qzt_clk) begin
-	// Even if this evaluation is faster than
-	// the update time it's not a problem. The
-	// status will be update based on clk_in!
+	// Update the number of neighbours only if
+	// the state is not changing
 	if(clk_in == 0) begin
 		nn_alive = NW + N + NE +
 							  W	+      E +
@@ -48,6 +31,8 @@ end
 
 
 always @(posedge clk_in) begin     // This is a combinational circuit
+
+	// This is not a bug, it's a feature!
 	if(set_state) begin
 		state <= initial_state;
 	end else begin
@@ -76,6 +61,8 @@ always @(posedge clk_in) begin     // This is a combinational circuit
 
 			// Any live cell with more than three live
 			// neighbours dies, as if by overpopulation.
+			// I could have used a default clause but i
+			// want to be warned of edge cases.
 			4'b0100,	4'b0101, 4'b0110, 4'b0111, 4'b1000: // nn_alive = 4, 5, 6, 7, 8
 				begin
 					state <= 1'b0;
