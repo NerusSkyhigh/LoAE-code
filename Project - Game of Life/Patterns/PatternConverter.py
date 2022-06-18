@@ -34,7 +34,11 @@ L = 2**ceil(log2(dim))
 
 print("`define L "+str(L))
 print("`define L2 "+str(L*L))
-print("PATTERN:")
+
+if(L > 16):
+    print("The FPGA supports only patterns up to 16x16 cell so this pattern may not work as intended")
+
+print("\n\nPATTERN:\n")
 for idx in range(L):
     if(idx < len(lines)):
         print( lines[idx].ljust(L, "0"), end="" )
