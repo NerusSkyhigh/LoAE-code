@@ -23,6 +23,7 @@ find . -type f  ! -path './.git/*' \
                 ! -name '*.p' \
                 ! -name '*.csv' \
                 ! -name '*.py' \
+                ! -path '*/Patterns/*' \
           -delete
 
 # Delete empty directories
