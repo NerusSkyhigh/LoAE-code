@@ -1,10 +1,11 @@
 /*
  * The FPGA has a 50 MHz base clock
  * The VGA standard for 640x480@60fps expects a 25.2MHz+-0.5% clock
- *				50MHz/25.2MHz = 1.98412698413
- *					(factor 2 due to FF) --> 0.99206349206
- * which can NOT be approximated to 1 as it would be a 0.8% error
- * Maybe my monitor will accept it anyway?
+ *				25.2MHz * 0.5% = 0.125 MHz
+ *
+ * This would imply that a 25 MHz clock would not be compatible with
+ * the standard, but my monitor seems to accept it anyway. This may
+ * be a source of error if I change monitor.
  */
 module	VGA_CLOCK_480p(input clk_in,
 
@@ -84,7 +85,6 @@ Module_Monostable	ms_timer( .clk_in(clk_in),
 
 
 always @ (posedge clk_in) begin
-
 	if(active & ROT_A & ~ROT_B ) begin // Clockwise
 		if(zoom < 3'b111) begin
 			// This is a nested if to avoid bounces at maximum
@@ -98,7 +98,7 @@ always @ (posedge clk_in) begin
 			zoom <= zoom - 1;
 		end
 		active <= 0;
-		
+
 	end else if(w_wait == 0) begin
 		active <= 1;
 	end

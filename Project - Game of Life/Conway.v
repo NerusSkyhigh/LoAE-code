@@ -1,4 +1,3 @@
-
 module CELLULAR_AUTOMATA(input qzt_clk, input clk_in,
 						// Nearest neighbours
 						input NW, input N, input NE,
@@ -30,13 +29,12 @@ always @(posedge qzt_clk) begin
 end
 
 
-always @(posedge clk_in) begin     // This is a combinational circuit
-
-	// This is not a bug, it's a feature!
+always @(posedge clk_in) begin
+	// If state_state is high, the initial state
+	// will be set only on the next positive edge of clk_in
 	if(set_state) begin
 		state <= initial_state;
 	end else begin
-
     case (nn_alive)
 			// Any live cell with fewer than two live neighbours dies,
 			// as if by underpopulation.
@@ -67,7 +65,6 @@ always @(posedge clk_in) begin     // This is a combinational circuit
 				begin
 					state <= 1'b0;
 				end
-
     endcase
 	end
 

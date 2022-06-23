@@ -19,6 +19,9 @@
 # ...even if they are in subdirectories
 !*/
 
+# As we are here, let's keep even the patterns from https://conwaylife.com/wiki/
+!**/Patterns/*
+
 # Keep these files safe!
 !libfreetype.so.6
 !libpng16.so.16
