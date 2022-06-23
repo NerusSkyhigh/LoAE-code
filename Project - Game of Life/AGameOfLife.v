@@ -1,6 +1,6 @@
 `define L 16 // Size of the grid, has to be a power of 2.
-						 // Due to FPGA limitations only L = 2, 4, 8, 16 is supported
-`define L2 256 // L2 has to be = L*L
+						 // Due to FPGA's limitations only L = 2, 4, 8, 16 is supported
+`define L2 256 // Has to be L2=L*L
 
 // This defines the default time between generations
 //`define		defaultPeriod	30'b000001011111010111100001000000	//	25 10^6 ~ 1s
@@ -32,7 +32,7 @@ VGA_ZOOM_KNOB zoomer(.clk_in(CLK_50M),
 
 
 // Initial condition encoded as a bit string. 1 = alive, 0 = dead
-wire [`L2-1:0] wb_initial_status = `L2'b0011100011100000000000000000000010000101000010001000010100001000100001010000100000111000111000000000000000000000001110001110000010000101000010001000010100001000100001010000100000000000000000000011100011100000000000000000000000000000000000000000000000000000;
+wire [`L2-1:0] wb_initial_status = `L2'b1100000000000011010000000000001001010000000010100011000000001100000000000000000000000111111000000000000000000000001100000000110001010000000010100100000000000010110000000000001100000000000000000000000000000000000000000000000000000000000000000000000000000000;
 wire [`L2-1:0] wb_status; // Current status
 
 
@@ -109,7 +109,7 @@ VGA_DRIVER_480p vga_driver(.clk_vga(w_clock_25MHz),// pixel clock
 always @(posedge w_clock_25MHz) begin
 	// wb_status[`L*row + col]
 
-	if( (wb_status[ `L*( (wb_vga_y >> wb_zoom ) % `L) + ( (wb_vga_x >> wb_zoom) % `L) ] == 1'b1) & (wb_vga_x<479) ) begin
+	if( (wb_status[`L2 - (`L*( (wb_vga_y >> wb_zoom ) % `L) + ( (wb_vga_x >> wb_zoom) % `L)) ] == 1'b1) & (wb_vga_x<479) ) begin
 		VGA_B[3:0] <= (data_enabled) ?  4'b0001 : 4'b0000;
 		VGA_R[3:0] <= (data_enabled) ?  4'b0001 : 4'b0000;
 		VGA_G[3:0] <= (data_enabled) ?  4'b0001 : 4'b0000;
