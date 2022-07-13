@@ -16,6 +16,7 @@
 !**/*.csv
 !**/*.py
 !**/*.pptx
+!**/*.md
 
 # ...even if they are in subdirectories
 !*/
