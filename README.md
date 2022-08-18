@@ -4,7 +4,7 @@
   <h3 align="center">Laboratory of Advanced Electronics - code</h3>
 
   <p align="center">
-    Code for the course "Laboratory of Advanced Electronics" heldd by prof. Leonardo Ricci (ay. 2021-2022)
+    Code for the course "Laboratory of Advanced Electronics" held by prof. Leonardo Ricci (ay. 2021-2022)
     <br />
     <br />
     <a href="https://github.com/NerusSkyhigh/LoAE-code/tree/main/Project%20-%20Game%20of%20Life">A Game of Life</a>
